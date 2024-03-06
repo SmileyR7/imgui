@@ -7,6 +7,9 @@
     <Filter Include="sources">
       <UniqueIdentifier>{4f33ddea-9910-456d-b868-4267eb3c2b19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImChess">
+      <UniqueIdentifier>{ef158302-91fc-4871-8c6e-63a3df5c97a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\imconfig.h">
@@ -23,6 +26,15 @@
     </ClInclude>
     <ClInclude Include="..\..\backends\imgui_impl_win32.h">
       <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="ImChess.h">
+      <Filter>ImChess</Filter>
+    </ClInclude>
+    <ClInclude Include="ImChess_Piece_Definitions.h">
+      <Filter>ImChess</Filter>
+    </ClInclude>
+    <ClInclude Include="ImChess_debug_timer.h">
+      <Filter>ImChess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +61,12 @@
     </ClCompile>
     <ClCompile Include="..\..\imgui_widgets.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImChess.cpp">
+      <Filter>ImChess</Filter>
+    </ClCompile>
+    <ClCompile Include="ImChess_Piece_Definitions.cpp">
+      <Filter>ImChess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

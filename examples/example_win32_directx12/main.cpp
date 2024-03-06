@@ -10,6 +10,8 @@
 // This is because we need ImTextureID to carry a 64-bit value and by default ImTextureID is defined as void*.
 // This define is set in the example .vcxproj file and need to be replicated in your app or by adding it to your imconfig.h file.
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
@@ -25,6 +27,8 @@
 #include <dxgidebug.h>
 #pragma comment(lib, "dxguid.lib")
 #endif
+
+#include "ImChess.h"
 
 struct FrameContext
 {
@@ -122,6 +126,9 @@ int main(int, char**)
 
     // Main loop
     bool done = false;
+
+    std::vector<chessboard_instance> chessboards;
+
     while (!done)
     {
         // Poll and handle messages (inputs, window resize, etc.)
@@ -160,10 +167,17 @@ int main(int, char**)
             ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
+            if (ImGui::Button("ADD"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                chessboards.push_back(chessboard_instance());
+
             ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+
+            if (ImGui::Button("FREE MOVE"))
+                chessboards.push_back(chessboard_instance(true));
+
+            ImGui::SameLine();
+
+            ImGui::Text("Chessboards = %d", chessboards.size());
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
@@ -177,6 +191,19 @@ int main(int, char**)
             if (ImGui::Button("Close Me"))
                 show_another_window = false;
             ImGui::End();
+        }
+
+        for (int i = 0; i < chessboards.size(); i++)
+        {
+            auto& board = chessboards[i];
+
+            if (board.should_delete)
+            {
+                chessboards.erase(chessboards.begin() + i);
+                continue;
+            }
+
+            board.on_draw();
         }
 
         // Rendering
@@ -209,8 +236,8 @@ int main(int, char**)
 
         g_pd3dCommandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&g_pd3dCommandList);
 
-        g_pSwapChain->Present(1, 0); // Present with vsync
-        //g_pSwapChain->Present(0, 0); // Present without vsync
+        //g_pSwapChain->Present(1, 0); // Present with vsync
+        g_pSwapChain->Present(0, 0); // Present without vsync
 
         UINT64 fenceValue = g_fenceLastSignaledValue + 1;
         g_pd3dCommandQueue->Signal(g_fence, fenceValue);
